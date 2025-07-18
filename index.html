@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>照片解析度增強工具</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin: 30px; }
+    img { max-width: 90%; margin-top: 20px; border: 1px solid #ccc; }
+    input, button { margin-top: 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>📸 照片變清楚工具</h2>
+  <input type="file" id="upload" accept="image/*"><br>
+  <button onclick="uploadImage()">上傳並變清楚</button>
+  <div id="result"></div>
+  <script>
+    function uploadImage() {
+      const fileInput = document.getElementById('upload');
+      if (!fileInput.files[0]) return alert("請選擇照片！");
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      }).then(res => res.blob()).then(blob => {
+        const url = URL.createObjectURL(blob);
+        document.getElementById('result').innerHTML = `
+          <h3>🔍 增強後的照片</h3>
+          <img src="${url}">
+          <br><a href="${url}" download="enhanced.jpg">⬇️ 下載照片</a>
+        `;
+      }).catch(err => alert("處理失敗：" + err));
+    }
+  </script>
+</body>
+</html>
